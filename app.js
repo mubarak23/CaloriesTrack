@@ -13,9 +13,10 @@ const ItemCtrl = (function() {
   //data structure / state
   const data = {
     items: [
+      /* 
       { id: 0, name: 'Stack Dinner', calories: 1200 },
       { id: 1, name: ' Cookies', calories: 400 },
-      { id: 2, name: 'Eggs', calories: 300 }
+      { id: 2, name: 'Eggs', calories: 300 } */
     ],
     currentItem: null,
     totalCalories: 0
@@ -87,6 +88,8 @@ const UICtrl = (function() {
     },
 
     addListItem: function(item) {
+      //Show item list
+      document.querySelector(UISelectors.itemList).style.display = 'block';
       //Create UI element
       const li = document.createElement('li');
       //add the class
@@ -112,6 +115,9 @@ const UICtrl = (function() {
     clearinput: function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
+    },
+    hideList: function() {
+      document.querySelector(UISelectors.itemList).style.display = 'none';
     },
     getSelectors: function() {
       return UISelectors;
@@ -155,9 +161,13 @@ const App = (function(ItemCtrl, UICtrl) {
       console.log('Initializing App...');
       //fetch item from the dta structure
       const items = ItemCtrl.getItems();
-
-      //popuate from the list
-      UICtrl.populateItemList(items);
+      //check if any items
+      if (items.length === 0) {
+        UICtrl.hideList();
+      } else {
+        //popuate from the list
+        UICtrl.populateItemList(items);
+      }
 
       //Load Event Listner
       loadEvenListners();
