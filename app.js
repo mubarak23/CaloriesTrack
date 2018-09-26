@@ -86,6 +86,29 @@ const UICtrl = (function() {
       };
     },
 
+    addListItem: function(item) {
+      //Create UI element
+      const li = document.createElement('li');
+      //add the class
+      li.className = 'collection-item';
+      //Add id
+      li.id = `item-${item.id}`;
+
+      //Add the Html
+      li.innerHTML = `
+      <strong>${item.name}</strong>: </strong> <em>${
+        item.calories
+      } Calories</em>
+      <a href="#" class="secondary-content">
+        <i class="edit-item fa fa-pencil"></i>
+      </a>
+              `;
+      //insert item
+      document
+        .querySelector(UISelectors.itemList)
+        .insertAdjacentElement('beforeend', li);
+    },
+
     getSelectors: function() {
       return UISelectors;
     }
@@ -112,6 +135,9 @@ const App = (function(ItemCtrl, UICtrl) {
     if (input.name !== '' && input.calories !== '') {
       //add item
       const newItem = ItemCtrl.addItem(input.name, input.calories);
+
+      //add item to the UI list
+      UICtrl.addListItem(newItem);
     }
     e.preventDefault();
   };
