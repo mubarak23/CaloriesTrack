@@ -45,6 +45,24 @@ const ItemCtrl = (function() {
       data.items.push(newItem);
       return newItem;
     },
+
+    //get items by id
+    getItemById: function(id) {
+      let found = null;
+      data.items.forEach(function(item) {
+        if (item.id == id) {
+          found = item;
+        }
+      });
+      return found;
+    },
+    getCurrentItem: function() {
+      return data.currentItem;
+    },
+    setCurrentItem: function(item) {
+      data.currentItem = item;
+    },
+
     getTotalCalories: function() {
       let total = 0;
       //loop through items and add calories
@@ -133,6 +151,16 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
     },
+    addItemToForm: function() {
+      UICtrl.showEditState();
+      document.querySelector(
+        UISelectors.itemNameInput
+      ).value = ItemCtrl.getCurrentItem().name;
+      document.querySelector(
+        UISelectors.itemCaloriesInput
+      ).value = ItemCtrl.getCurrentItem().calories;
+    },
+
     hideList: function() {
       document.querySelector(UISelectors.itemList).style.display = 'none';
     },
@@ -147,6 +175,14 @@ const UICtrl = (function() {
       document.querySelector(UISelectors.deleteBtn).style.display = 'none';
       document.querySelector(UISelectors.backBtn).style.display = 'none';
       document.querySelector(UISelectors.addBtn).style.display = 'inline';
+    },
+
+    showEditState: function() {
+      UICtrl.clearinput();
+      document.querySelector(UISelectors.updateBtn).style.display = 'inline';
+      document.querySelector(UISelectors.deleteBtn).style.display = 'inline';
+      document.querySelector(UISelectors.backBtn).style.display = 'inline';
+      document.querySelector(UISelectors.addBtn).style.display = 'none';
     },
     getSelectors: function() {
       return UISelectors;
@@ -197,7 +233,25 @@ const App = (function(ItemCtrl, UICtrl) {
   //update item submit
   const itemUpdateSubmit = function(e) {
     if (e.target.classList.contains('edit-item')) {
-      console.log('edit item');
+      //get the list item id
+      const listId = e.target.parentNode.parentNode.id;
+
+      //break into an array
+      const listIdArr = listId.split('-');
+      //console.log(listIdArr);
+
+      //get the actual id
+      const id = parseInt(listIdArr[1]);
+
+      //get item to edit
+      const itemToEdit = ItemCtrl.getItemById(id);
+      console.log(itemToEdit);
+
+      //Seet current item
+      ItemCtrl.setCurrentItem(itemToEdit);
+
+      //Add item to form
+      UICtrl.addItemToForm();
     }
     e.preventDefault();
   };
