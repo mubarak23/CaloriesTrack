@@ -36,7 +36,8 @@ const ItemCtrl = (function() {
 const UICtrl = (function() {
   //private method
   const UISelector = {
-    itemList: '#item-list'
+    itemList: '#item-list',
+    addBtn: '.add-btn'
   };
 
   //public method
@@ -56,13 +57,42 @@ const UICtrl = (function() {
 
       //Insert List Items
       document.querySelector(UISelector.itemList).innerHTML = html;
+    },
+    //get item input
+    getItemInput: function() {
+      return {
+        name: '',
+        calories: ''
+      };
+    },
+
+    getSelectors: function() {
+      return UISelector;
     }
   };
 })();
 //App Controller
 const App = (function(ItemCtrl, UICtrl) {
-  //Public method
+  //private Method
+  //load event listener
+  const loadEvenListners = function() {
+    //get ui selector
+    const UISelectors = UICtrl.getSelectors();
+    //additem event
+    document
+      .querySelector(UISelectors.addBtn)
+      .addEventListener('click', itemAddSubmit);
+  };
+
+  //add item submit
+  const itemAddSubmit = function(e) {
+    //get form input from UI controller
+    const input = UICtrl.getItemInput();
+    e.preventDefault();
+  };
+
   return {
+    //Public method
     init: function() {
       console.log('Initializing App...');
       //fetch item from the dta structure
@@ -70,6 +100,9 @@ const App = (function(ItemCtrl, UICtrl) {
 
       //popuate from the list
       UICtrl.populateItemList(items);
+
+      //Load Event Listner
+      loadEvenListners();
     }
   };
 })(ItemCtrl, UICtrl);
