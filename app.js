@@ -4,7 +4,7 @@
 const ItemCtrl = (function() {
   //console.log('Item Controller!!!!');
   //Item Constructor
-  const Item = function(it, name, calories) {
+  const Item = function(id, name, calories) {
     this.id = id;
     this.name = name;
     this.calories = calories;
@@ -25,6 +25,24 @@ const ItemCtrl = (function() {
   return {
     getItems: function() {
       return data.items;
+    },
+    addItem: function(name, calories) {
+      //create the id
+      let ID;
+      if (data.items.length > 0) {
+        ID = data.items[data.items.length - 1].id + 1;
+      } else {
+        ID = 0;
+      }
+      //clories to number
+      calories = parseInt(calories);
+
+      //create a new item
+      newItem = new Item(ID, name, calories);
+
+      //push the new item to items array
+      data.items.push(newItem);
+      return newItem;
     },
     logData: function() {
       return data;
@@ -92,7 +110,8 @@ const App = (function(ItemCtrl, UICtrl) {
     const input = UICtrl.getItemInput();
     //check for input for both name and calories
     if (input.name !== '' && input.calories !== '') {
-      console.log(input);
+      //add item
+      const newItem = ItemCtrl.addItem(input.name, input.calories);
     }
     e.preventDefault();
   };
