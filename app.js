@@ -105,6 +105,7 @@ const UICtrl = (function() {
     itemList: '#item-list',
     addBtn: '.add-btn',
     updateBtn: '.update-btn',
+    listItems: '#item-list li',
     deleteBtn: '.delete-btn',
     backBtn: '.back-btn',
     itemNameInput: '#item-name',
@@ -161,6 +162,27 @@ const UICtrl = (function() {
       document
         .querySelector(UISelectors.itemList)
         .insertAdjacentElement('beforeend', li);
+    },
+
+    updateListItem: function(item) {
+      let listItems = document.querySelectorAll(UISelectors.listItems);
+
+      //Turn node list into an array
+      listItems = Array.from(listItems);
+
+      listItems.forEach(function(listItem) {
+        const itemID = listItem.getAttribute('id');
+        if (itemID === `item-${item.id}`) {
+          document.querySelector(`#${itemID}`).innerHTML = `
+            <strong>${item.name}</strong>: </strong> <em>${
+            item.calories
+          } Calories</em>
+            <a href="#" class="secondary-content">
+              <i class="edit-item fa fa-pencil"></i>
+            </a>  
+              `;
+        }
+      });
     },
 
     clearinput: function() {
@@ -294,6 +316,15 @@ const App = (function(ItemCtrl, UICtrl) {
     //update item
     const updateItem = ItemCtrl.updateItem(input.name, input.calories);
 
+    //update the UI
+    UICtrl.updateListItem(updateItem);
+
+    //Get the total calories
+    const totalcalories = ItemCtrl.getTotalCalories();
+    //add total calories to the UI
+    UICtrl.showTotalCalories(totalcalories);
+    
+    UICtrl.clearEditState();
     e.preventDefault();
   };
 
