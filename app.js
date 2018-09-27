@@ -196,15 +196,29 @@ const App = (function(ItemCtrl, UICtrl) {
   const loadEvenListners = function() {
     //get ui selector
     const UISelectors = UICtrl.getSelectors();
-    //additem event
+
+    //Add item event
     document
       .querySelector(UISelectors.addBtn)
       .addEventListener('click', itemAddSubmit);
 
+    //Disabled submit on enter
+    document.addEventListener('keypress', function(e) {
+      if (e.keyCode === 13 || e.which === 13) {
+        e.preventDefault();
+        return false;
+      }
+    });
+
     //Edit icon click event
     document
       .querySelector(UISelectors.itemList)
-      .addEventListener('click', itemUpdateSubmit);
+      .addEventListener('click', itemEditClick);
+
+    //update item event
+    document
+      .querySelector(UISelectors.updateBtn)
+      .addEventListener('click', updateItemSubmit);
   };
 
   //add item submit
@@ -230,8 +244,8 @@ const App = (function(ItemCtrl, UICtrl) {
     e.preventDefault();
   };
 
-  //update item submit
-  const itemUpdateSubmit = function(e) {
+  //click edit item
+  const itemEditClick = function(e) {
     if (e.target.classList.contains('edit-item')) {
       //get the list item id
       const listId = e.target.parentNode.parentNode.id;
@@ -253,6 +267,12 @@ const App = (function(ItemCtrl, UICtrl) {
       //Add item to form
       UICtrl.addItemToForm();
     }
+    e.preventDefault();
+  };
+
+  //Update item submit
+  const updateItemSubmit = function(e) {
+    console.log('Update item....');
     e.preventDefault();
   };
 
