@@ -56,6 +56,10 @@ const StorageCtrl = (function() {
         }
       });
       localStorage.setItem('items', JSON.stringify(items));
+    },
+    clearItemsFromStorage: function() {
+      localStorage.removeItem('items');
+      // localStorage.setItem('items', JSON.stringify(items));
     }
   };
 })();
@@ -378,6 +382,9 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
       //add item
       const newItem = ItemCtrl.addItem(input.name, input.calories);
 
+      //Store in local storage
+      StorageCtrl.storeItem(newItem);
+
       //add item to the UI list
       UICtrl.addListItem(newItem);
 
@@ -385,9 +392,6 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
       const totalcalories = ItemCtrl.getTotalCalories();
       //add total calories to the UI
       UICtrl.showTotalCalories(totalcalories);
-
-      //Store in local storage
-      StorageCtrl.storeItem(newItem);
 
       //clear field
       UICtrl.clearinput();
@@ -479,8 +483,13 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
 
     //remove from the UI
     UICtrl.removeItems();
-    //hide the ul
+
+    //Clear from local storage
+    StorageCtrl.clearItemsFromStorage();
+
+    //hide the UL
     UICtrl.hideList();
+
     e.preventDefault();
   };
 
@@ -492,13 +501,17 @@ const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
       console.log('Initializing App...');
       //fetch item from the dta structure
       const items = ItemCtrl.getItems();
-      //check if any items
+
+      // Check if any items
       if (items.length === 0) {
         UICtrl.hideList();
       } else {
-        //popuate from the list
+        // Populate list with items
         UICtrl.populateItemList(items);
       }
+
+      //UICtrl.populateItemList(items);
+
       //Get the total calories
       const totalcalories = ItemCtrl.getTotalCalories();
       //add total calories to the UI
