@@ -1,4 +1,41 @@
 //Storage Controller
+const StorageCtrl = (function() {
+  //public method
+  return {
+    storeItem: function(item) {
+      let items;
+      //Check if any item in local storage
+      if (localStorage.getItem('items') === null) {
+        items = [];
+        //push the new items
+        items.push(item);
+
+        //setting items from local storage
+        localStorage.setItem('items', JSON.stringify(items));
+      } else {
+        //get already in local storage
+
+        items = JSON.parse(localStorage.getItem('items'));
+
+        //push new item
+        items.push(item);
+
+        //reset local storage
+        localStorage.setItem('items', JSON.stringify(items));
+      }
+    },
+
+    getItemFromStorage: function() {
+      let items;
+      if (localStorage.getItem('items') === null) {
+        items = [];
+      } else {
+        items = JSON.parse(localStorage.getItem('items'));
+        return items;
+      }
+    }
+  };
+})();
 
 //Item Controller
 const ItemCtrl = (function() {
@@ -12,12 +49,13 @@ const ItemCtrl = (function() {
 
   //data structure / state
   const data = {
-    items: [
-      /* 
+    //items: [
+    /* 
       { id: 0, name: 'Stack Dinner', calories: 1200 },
       { id: 1, name: ' Cookies', calories: 400 },
       { id: 2, name: 'Eggs', calories: 300 } */
-    ],
+    //],
+    items: StorageCtrl.getItemFromStorage(),
     currentItem: null,
     totalCalories: 0
   };
@@ -262,7 +300,7 @@ const UICtrl = (function() {
   };
 })();
 //App Controller
-const App = (function(ItemCtrl, UICtrl) {
+const App = (function(ItemCtrl, StorageCtrl, UICtrl) {
   //private Method
   //load event listener
   const loadEvenListners = function() {
@@ -324,6 +362,9 @@ const App = (function(ItemCtrl, UICtrl) {
       const totalcalories = ItemCtrl.getTotalCalories();
       //add total calories to the UI
       UICtrl.showTotalCalories(totalcalories);
+
+      //Store in local storage
+      StorageCtrl.storeItem(newItem);
 
       //clear field
       UICtrl.clearinput();
@@ -440,7 +481,7 @@ const App = (function(ItemCtrl, UICtrl) {
       loadEvenListners();
     }
   };
-})(ItemCtrl, UICtrl);
+})(ItemCtrl, StorageCtrl, UICtrl);
 
 //initializing App
 App.init();
