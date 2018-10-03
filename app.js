@@ -72,6 +72,19 @@ const ItemCtrl = (function() {
       return found;
     },
 
+    deleteItem: function(id) {
+      //get ids
+      ids = data.items.map(function(item) {
+        return item.id;
+      });
+
+      //get the index
+      const index = ids.indexOf(id);
+
+      //remove item
+      data.items.splice(index, 1);
+    },
+
     getCurrentItem: function() {
       return data.currentItem;
     },
@@ -185,6 +198,11 @@ const UICtrl = (function() {
       });
     },
 
+    deleteListItem: function(id) {
+      const itemID = `#item-${id}`;
+      const item = document.querySelector(itemID);
+      item.remove();
+    },
     clearinput: function() {
       document.querySelector(UISelectors.itemNameInput).value = '';
       document.querySelector(UISelectors.itemCaloriesInput).value = '';
@@ -257,6 +275,16 @@ const App = (function(ItemCtrl, UICtrl) {
     document
       .querySelector(UISelectors.updateBtn)
       .addEventListener('click', updateItemSubmit);
+
+    // Back button event
+    document
+      .querySelector(UISelectors.backBtn)
+      .addEventListener('click', UICtrl.clearEditState);
+
+    //delete item event
+    document
+      .querySelector(UISelectors.deleteBtn)
+      .addEventListener('click', itemDeleteSubmit);
   };
 
   //add item submit
@@ -323,8 +351,29 @@ const App = (function(ItemCtrl, UICtrl) {
     const totalcalories = ItemCtrl.getTotalCalories();
     //add total calories to the UI
     UICtrl.showTotalCalories(totalcalories);
-    
+
     UICtrl.clearEditState();
+    e.preventDefault();
+  };
+
+  //Delete button event
+  const itemDeleteSubmit = function(e) {
+    //get current item
+    const currentItem = ItemCtrl.getCurrentItem();
+
+    //Delete from data structure
+    ItemCtrl.deleteItem(currentItem.id);
+
+    //Delete from the UI
+    UICtrl.deleteListItem(currentItem.id);
+
+    //Get the total calories
+    const totalcalories = ItemCtrl.getTotalCalories();
+    //add total calories to the UI
+    UICtrl.showTotalCalories(totalcalories);
+
+    UICtrl.clearEditState();
+
     e.preventDefault();
   };
 
@@ -347,6 +396,8 @@ const App = (function(ItemCtrl, UICtrl) {
       const totalcalories = ItemCtrl.getTotalCalories();
       //add total calories to the UI
       UICtrl.showTotalCalories(totalcalories);
+
+      // UICtrl.clearEditState();
 
       //Load Event Listner
       loadEvenListners();
